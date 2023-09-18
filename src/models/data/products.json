@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Sony Headphones WH-CH520",
+    "description": "Sony WH-CH520, Wireless On-Ear Bluetooth Headphones with Mic, Upto 50 Hours Playtime, DSEE Upscale, Multipoint Connectivity/Dual Pairing,Voice Assistant App Support for Mobile Phones",
+    "price": 599,
+    "category": "5",
+    "brand": "Sony",
+    "quantity": 7,
+    "sold": 2,
+    "images": [
+      {
+        "public_id": "12",
+        "url": "https://"
+      }
+    ],
+    "color": ["black", "white"],
+    "tags": "test",
+    "slug": "Sony-Headphones-WH-CH520",
+    "id": "1150a9e8-b1e6-4ea3-866f-820806c08ccf"
+  },
+  {
+    "title": "PS5 Elden Ring",
+    "description": "A NEW FANTASY WORLD Journey through the Lands Between, a new fantasy world created by Hidetaka Miyazaki, creator of the influential DARK SOULS video game series, and George R. R. Martin, author of The New York Times best-selling fantasy series, A Song of Ice and Fire. Unravel the mysteries of the Elden Ring’s power.",
+    "price": 3688,
+    "category": "3",
+    "brand": "BANDAI NAMCO Entertainment",
+    "quantity": 10,
+    "sold": 0,
+    "images": [
+      {
+        "public_id": "images_d99ca708-95b6-4cd8-99eb-960a012bc201.jpeg",
+        "url": "C:/Global WorkSpace/E-Commerce/shopify-backend/src/public/images/images_d99ca708-95b6-4cd8-99eb-960a012bc201.jpeg"
+      }
+    ],
+    "tags": "games",
+    "slug": "PS5-Elden-Ring",
+    "id": "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4",
+    "ratings": [
+      {
+        "star": 3,
+        "comment": "very lol game",
+        "posted_by": "2"
+      }
+    ],
+    "avgrating": 3
+  }
+]

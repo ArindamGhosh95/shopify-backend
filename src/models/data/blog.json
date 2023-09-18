@@ -1,0 +1,32 @@
+[
+  {
+    "id": "5d7e752c-eee7-4f31-a7f5-2fbc35644680",
+    "title": "Boom new Mobiles launched",
+    "description": "this mobile very good",
+    "category": "Mobile",
+    "numViews": 11,
+    "isLiked": true,
+    "likes": [],
+    "dislikes": [],
+    "author": "admin",
+    "images": {
+      "public_id": "1",
+      "url": "http://"
+    }
+  },
+  {
+    "id": "0a5c6fd3-6023-44f4-9939-87cd97a3cc37",
+    "title": "Best laptops of 2023",
+    "description": "this laptop has ryzen 5",
+    "category": "Laptop",
+    "images": {
+      "public_id": "2",
+      "url": "http://localhost/3000"
+    },
+    "numViews": 0,
+    "isLiked": false,
+    "likes": [],
+    "dislikes": [],
+    "author": "admin"
+  }
+]

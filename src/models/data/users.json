@@ -1,0 +1,30 @@
+[
+  {
+    "id": "2",
+    "firstname": "afshdoewnciscx",
+    "lastname": "world",
+    "email": "arindamghosh1995@gmail.com",
+    "mobile": "99444002",
+    "password": "$2b$10$K/f.nTj0348rwUC8jpKWrO4NHBcafc4cx5gyqCHKqnlvXLypxNgMq",
+    "role": "user",
+    "isBlocked": false,
+    "cart": [],
+    "wishlist": [
+      "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4"
+    ],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJlbWFpbCI6ImFyaW5kYW1naG9zaDE5OTVAZ21haWwuY29tIiwiaWF0IjoxNjk0NjI2MDYxLCJleHAiOjE2OTQ4ODUyNjF9.qJ2foNuSU7_vrx2AusE4RyQSpoTzhsWiQCz4yWQ3-og"
+  },
+  {
+    "id": "3",
+    "firstname": "hello",
+    "lastname": "world",
+    "email": "arindam@gmail.com",
+    "mobile": "99444002",
+    "password": "$2b$10$VltIDRichWJ0e26h.dHqWOSP2uDYhK7XNhdwjk48OlbYhU5AJIvAy",
+    "isBlocked": false,
+    "role": "admin",
+    "cart": [],
+    "wishlist": [],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJlbWFpbCI6ImFyaW5kYW1AZ21haWwuY29tIiwiaWF0IjoxNjk0OTU4MDMzLCJleHAiOjE2OTUyMTcyMzN9.6Lj0VNP890VujN-x-SwGZzy8V7khblnY3difgFQv2zE"
+  }
+]

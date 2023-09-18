@@ -1,0 +1,34 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import authRouter from "./routes/authRoutes";
+import productRouter from "./routes/productRoutes";
+import blogRouter from "./routes/blogRoutes";
+import blogCategoryRouter from "./routes/blogCategoryRoutes";
+import categoryRouter from "./routes/productCategoryRoutes";
+import brandRouter from "./routes/brandRoutes";
+import colorRouter from "./routes/colorRoutes";
+import couponRouter from "./routes/couponRoutes";
+import { errorHandler, notFound } from "./middlewares/errorHandler";
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+dotenv.config();
+const PORT = process.env.PORT || 5000;
+
+app.use("/api/user", authRouter);
+app.use("/api/product", productRouter);
+app.use("/api/blog", blogRouter);
+app.use("/api/blog/category", blogCategoryRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/brand", brandRouter);
+app.use("/api/color", colorRouter);
+app.use("/api/coupon", couponRouter);
+app.use(notFound);
+app.use(errorHandler);
+app.listen(PORT, () => {
+  console.log(`Server started successfully at port ${PORT}`);
+});
+console.log("Arindam!");
