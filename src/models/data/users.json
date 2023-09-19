@@ -3,7 +3,7 @@
     "id": "2",
     "firstname": "afshdoewnciscx",
     "lastname": "world",
-    "email": "arindamghosh1995@gmail.com",
+    "email": "arindamghosh19@mail.com",
     "mobile": "99444002",
     "password": "$2b$10$K/f.nTj0348rwUC8jpKWrO4NHBcafc4cx5gyqCHKqnlvXLypxNgMq",
     "role": "user",
@@ -20,11 +20,29 @@
     "lastname": "world",
     "email": "arindam@gmail.com",
     "mobile": "99444002",
-    "password": "$2b$10$VltIDRichWJ0e26h.dHqWOSP2uDYhK7XNhdwjk48OlbYhU5AJIvAy",
+    "password": "$2b$10$cajcGz6F8Icd3rZ8ZfQgou45P3Jp0WL2u3bAMp2zl1HbAu/ZMME/O",
     "isBlocked": false,
     "role": "admin",
     "cart": [],
-    "wishlist": [],
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJlbWFpbCI6ImFyaW5kYW1AZ21haWwuY29tIiwiaWF0IjoxNjk0OTU4MDMzLCJleHAiOjE2OTUyMTcyMzN9.6Lj0VNP890VujN-x-SwGZzy8V7khblnY3difgFQv2zE"
+    "wishlist": [
+      "1150a9e8-b1e6-4ea3-866f-820806c08ccf"
+    ],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJlbWFpbCI6ImFyaW5kYW1AZ21haWwuY29tIiwiaWF0IjoxNjk1MTM3MzQ2LCJleHAiOjE2OTUzOTY1NDZ9.NoFUulzNmRK4CtIXkuJtTWTCaXt6MJ2BhZUB8sGpiNE"
+  },
+  {
+    "id": "5c176a07-5d3f-4216-9e38-1b4164e6c486",
+    "firstname": "arindam",
+    "lastname": "world",
+    "email": "arindam123@gmail.com",
+    "mobile": "99444002",
+    "password": "$2b$10$iFzedALaIQe85SVQNduQtuGPubXrW41f9yCAKA06Rdqw3xpUp16EW",
+    "isBlocked": false,
+    "cart": [],
+    "wishlist": [
+      "1150a9e8-b1e6-4ea3-866f-820806c08ccf",
+      "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4"
+    ],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjMTc2YTA3LTVkM2YtNDIxNi05ZTM4LTFiNDE2NGU2YzQ4NiIsImVtYWlsIjoiYXJpbmRhbTEyM0BnbWFpbC5jb20iLCJpYXQiOjE2OTUxNDI5NjAsImV4cCI6MTY5NTQwMjE2MH0.ovcCqldPIIrF1TQDMVt46oNpyp5k1H68tbCbLbPOeH8",
+    "address": "ohio lucknow"
   }
 ]

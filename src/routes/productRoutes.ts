@@ -6,7 +6,6 @@ import {
   getProductByID,
   createProduct,
   updateProduct,
-  addToWishlist,
   rating,
   uploadImages,
 } from "../controller/ProductController";
@@ -18,7 +17,6 @@ const router = express.Router();
 router.get("/", getAllProducts);
 router.post("/", authenticateJWT, isAdmin, createProduct);
 router.get("/:id", getProductByID);
-router.put("/wishlist", authenticateJWT, addToWishlist);
 router.put("/rating", authenticateJWT, rating);
 router.put("/:id", authenticateJWT, isAdmin, updateProduct);
 router.delete("/:id", authenticateJWT, isAdmin, deleteProduct);
