@@ -46,53 +46,6 @@ export const deleteProduct = expressAsyncHandler(async (req, res) => {
     throw new Error(err.message);
   }
 });
-//add product to wishlist of a user
-export const addToWishlist = expressAsyncHandler(async (req: any, res: any) => {
-  const { id } = req?.user;
-  const { prodId } = req?.body;
-  const userStore = new UserStore();
-  const product = productStore.getProductById(prodId);
-  const user = userStore.getUserById(id);
-  const alreadyAdded = user?.wishlist.find((id) => {
-    return id === prodId;
-  });
-  if (!product) {
-    throw new Error("Product Not found.");
-  }
-  if (!user) {
-    throw new Error("User Not found.");
-  }
-  if (!alreadyAdded) {
-    user.wishlist.push(product.id);
-    userStore.updateUserById(user.id, user);
-    const updatedUser = userStore.getUserById(id);
-    res.json({
-      message: "Product added to Wishlist.",
-      user: {
-        id: updatedUser?.id,
-        name: updatedUser?.firstname,
-        email: updatedUser?.email,
-        wishList: updatedUser?.wishlist,
-      },
-    });
-  } else {
-    const productidx = user.wishlist.findIndex((x) => {
-      return x === prodId;
-    });
-    const updatedUser = userStore.getUserById(id);
-    user.wishlist.splice(productidx, 1);
-    userStore.updateUserById(user.id, user);
-    res.json({
-      message: "Product removed from wishlist.",
-      user: {
-        id: updatedUser?.id,
-        name: updatedUser?.firstname,
-        email: updatedUser?.email,
-        wishList: updatedUser?.wishlist,
-      },
-    });
-  }
-});
 //add rating to product
 export const rating = expressAsyncHandler(async (req: any, res: any) => {
   const { id } = req?.user;
