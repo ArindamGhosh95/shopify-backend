@@ -7,10 +7,12 @@ import { generateToken } from "../config/jwtToken";
 import { generateRefreshToken } from "../config/refreshtoken";
 import { User, UserStore } from "../models/User";
 import { sendEmail } from "./EmailController";
+import { Product, ProductStore } from "../models/Product";
+
+const userStore = new UserStore();
 //create user
 export const createUser = expressAsyncHandler(async (req: any, res: any) => {
   const email: string = req?.body?.email;
-  const userStore = new UserStore();
   const findUser: User | undefined = userStore.getUserByEmail(email);
   if (!findUser) {
     //create new user
@@ -39,8 +41,35 @@ export const createUser = expressAsyncHandler(async (req: any, res: any) => {
 // login user
 export const loginUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const userStore = new UserStore();
+
   const findUser: User | undefined = userStore.getUserByEmail(email);
+  if (findUser && (await isPasswordMatch(password, findUser.password))) {
+    const refreshToken = generateRefreshToken(findUser.id, findUser.email);
+    userStore.updateUserById(findUser.id, { refreshToken: refreshToken });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: findUser?.id,
+      firstname: findUser?.firstname,
+      lastname: findUser?.lastname,
+      email: findUser?.email,
+      mobile: findUser?.mobile,
+      token: generateToken(findUser.id, findUser.email),
+    });
+  } else {
+    throw new Error("Invalid Credentials");
+  }
+});
+// login admin
+export const loginAdmin = expressAsyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const findUser: User | undefined = userStore.getUserByEmail(email);
+  if (findUser?.role !== "admin") {
+    throw new Error("User is not an Admin.");
+  }
   if (findUser && (await isPasswordMatch(password, findUser.password))) {
     const refreshToken = generateRefreshToken(findUser.id, findUser.email);
     userStore.updateUserById(findUser.id, { refreshToken: refreshToken });
@@ -63,7 +92,6 @@ export const loginUser = expressAsyncHandler(async (req, res) => {
 // refresh token
 export const handleRefreshToken = expressAsyncHandler(
   async (req: any, res: any) => {
-    const userStore = new UserStore();
     const cookie = req.cookies;
     if (!cookie?.refreshToken) {
       throw new Error("Refresh token not found in Cookies.");
@@ -88,7 +116,6 @@ export const handleRefreshToken = expressAsyncHandler(
 );
 // logout User
 export const logoutUser = expressAsyncHandler(async (req: any, res: any) => {
-  const userStore = new UserStore();
   const refreshToken = req?.cookies?.refreshToken;
   const findUser = userStore.findUserByRefreshToken(refreshToken);
   if (!findUser) {
@@ -110,7 +137,7 @@ export const logoutUser = expressAsyncHandler(async (req: any, res: any) => {
 // update user
 export const updatedUser = expressAsyncHandler(async (req: any, res: any) => {
   const { id } = req?.user;
-  const userStore = new UserStore();
+
   const findUser: User | undefined = userStore.getUserById(id);
 
   if (findUser) {
@@ -138,7 +165,6 @@ export const updatedUser = expressAsyncHandler(async (req: any, res: any) => {
 });
 // get all users
 export const getallUser = expressAsyncHandler(async (req: any, res: any) => {
-  const userStore = new UserStore();
   const allUsers = userStore.getAllUsers();
   return res.json({
     message: "User fetched successfully",
@@ -148,7 +174,7 @@ export const getallUser = expressAsyncHandler(async (req: any, res: any) => {
 // get a user by id
 export const getUserById = expressAsyncHandler(async (req: any, res: any) => {
   const { id } = req.params;
-  const userStore = new UserStore();
+
   const findUser: User | undefined = userStore.getUserById(id);
   if (!findUser) {
     throw new Error("User not found");
@@ -160,7 +186,7 @@ export const getUserById = expressAsyncHandler(async (req: any, res: any) => {
 // delete a user
 export const deleteUserById = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
-  const userStore = new UserStore();
+
   try {
     userStore.deleteUserById(id);
     res.json({
@@ -173,7 +199,7 @@ export const deleteUserById = expressAsyncHandler(async (req, res) => {
 // block user
 export const blockUser = expressAsyncHandler(async (req: any, res: any) => {
   const { id } = req.params;
-  const userStore = new UserStore();
+
   const findUser: User | undefined = userStore.getUserById(id);
   if (findUser) {
     const newUser = {
@@ -192,7 +218,7 @@ export const blockUser = expressAsyncHandler(async (req: any, res: any) => {
 // unblock user
 export const unBlockUser = expressAsyncHandler(async (req: any, res: any) => {
   const { id } = req.params;
-  const userStore = new UserStore();
+
   const findUser: User | undefined = userStore.getUserById(id);
   if (findUser) {
     const newUser = {
@@ -213,7 +239,7 @@ export const updatePassword = expressAsyncHandler(
   async (req: any, res: any) => {
     const { id } = req.user;
     const { password } = req.body;
-    const userStore = new UserStore();
+
     const findUser: User | undefined = userStore.getUserById(id);
     if (findUser && password) {
       findUser.password = password;
@@ -227,7 +253,6 @@ export const updatePassword = expressAsyncHandler(
 // password reset token
 export const forgotPasswordToken = expressAsyncHandler(
   async (req: any, res: any) => {
-    const userStore = new UserStore();
     const { email } = req.body;
     const user = userStore.getUserByEmail(email);
     if (!user) throw new Error("User not found with this email");
@@ -252,7 +277,7 @@ export const resetPassword = expressAsyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const userStore = new UserStore();
+
   const userArray = userStore.getAllUsers();
   const user: User | undefined = userArray.find((user) => {
     return (
@@ -268,4 +293,85 @@ export const resetPassword = expressAsyncHandler(async (req, res) => {
   user.passwordResetExpiresIn = undefined;
   userStore.updateUserById(user.id, user);
   res.json(user);
+});
+//add product to wishlist of a user
+export const addToWishlist = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req?.user;
+  const { prodId } = req?.body;
+  const productStore = new ProductStore();
+  const product = productStore.getProductById(prodId);
+  const user = userStore.getUserById(id);
+  const alreadyAdded = user?.wishlist.find((id) => {
+    return id === prodId;
+  });
+  if (!product) {
+    throw new Error("Product Not found.");
+  }
+  if (!user) {
+    throw new Error("User Not found.");
+  }
+  if (!alreadyAdded) {
+    user.wishlist.push(product.id);
+    userStore.updateUserById(user.id, user);
+    const updatedUser = userStore.getUserById(id);
+    res.json({
+      message: "Product added to Wishlist.",
+      user: {
+        id: updatedUser?.id,
+        name: updatedUser?.firstname,
+        email: updatedUser?.email,
+        wishList: updatedUser?.wishlist,
+      },
+    });
+  } else {
+    const productidx = user.wishlist.findIndex((x) => {
+      return x === prodId;
+    });
+    const updatedUser = userStore.getUserById(id);
+    user.wishlist.splice(productidx, 1);
+    userStore.updateUserById(user.id, user);
+    res.json({
+      message: "Product removed from wishlist.",
+      user: {
+        id: updatedUser?.id,
+        name: updatedUser?.firstname,
+        email: updatedUser?.email,
+        wishList: updatedUser?.wishlist,
+      },
+    });
+  }
+});
+//getWishlist
+export const getWishlist = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  const productStore = new ProductStore();
+  try {
+    const findUser = userStore.getUserById(id);
+    const wishListArray: (Product | undefined)[] = [];
+    if (findUser) {
+      const wishList = findUser.wishlist;
+      wishList.forEach((x) => {
+        const product = productStore.getProductById(x);
+        wishListArray.push(product);
+      });
+    } else {
+      throw new Error("User not found.");
+    }
+    res.json({ wishlist: wishListArray });
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+// save address
+export const saveAddress = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  const { address } = req.body;
+  const findUser = userStore.getUserById(id);
+  if (findUser) {
+    findUser.address = address;
+    userStore.updateUserById(findUser.id, findUser);
+    res.json(userStore.getUserById(findUser.id));
+  } else {
+    throw new Error("User not found.");
+  }
 });
