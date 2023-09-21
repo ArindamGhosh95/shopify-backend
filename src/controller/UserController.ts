@@ -8,6 +8,7 @@ import { generateRefreshToken } from "../config/refreshtoken";
 import { User, UserStore } from "../models/User";
 import { sendEmail } from "./EmailController";
 import { Product, ProductStore } from "../models/Product";
+import { CartStore } from "../models/Cart";
 
 const userStore = new UserStore();
 //create user
@@ -371,6 +372,23 @@ export const saveAddress = expressAsyncHandler(async (req: any, res: any) => {
     findUser.address = address;
     userStore.updateUserById(findUser.id, findUser);
     res.json(userStore.getUserById(findUser.id));
+  } else {
+    throw new Error("User not found.");
+  }
+});
+// user cart
+export const addToCart = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  const findUser = userStore.getUserById(id);
+  const cartStore = new CartStore();
+  if (findUser) {
+    if (findUser.cart) {
+    }
+    const cartId = cartStore.createCart(req.body);
+    findUser.cart.push(cartId);
+    userStore.updateUserById(id, findUser);
+    const updatedUser = userStore.getUserById(id);
+    res.json(updatedUser);
   } else {
     throw new Error("User not found.");
   }
