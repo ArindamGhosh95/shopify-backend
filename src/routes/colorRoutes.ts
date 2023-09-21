@@ -8,8 +8,10 @@ import {
   updateColor,
 } from "../controller/ColorController";
 const router = express.Router();
+
 router.get("/all-colors", getAllColors);
 router.get("/:id", getColorbyId);
+// admin routes
 router.post("/", authenticateJWT, isAdmin, createColor);
 router.put("/:id", authenticateJWT, isAdmin, updateColor);
 router.delete("/:id", authenticateJWT, isAdmin, deleteColor);

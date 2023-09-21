@@ -16,12 +16,14 @@ import {
 } from "../controller/uploadImagesController";
 const router = express.Router();
 
-router.post("/", authenticateJWT, isAdmin, createBlog);
-router.put("/likes", authenticateJWT, liketheBlog);
-router.put("/dislikes", authenticateJWT, disliketheBlog);
-router.put("/:id", authenticateJWT, isAdmin, updateBlog);
 router.get("/:id", getBlog);
 router.get("/", getAllBlogs);
+// authenticated routes
+router.put("/likes", authenticateJWT, liketheBlog);
+router.put("/dislikes", authenticateJWT, disliketheBlog);
+// admin routes
+router.post("/", authenticateJWT, isAdmin, createBlog);
+router.put("/:id", authenticateJWT, isAdmin, updateBlog);
 router.delete("/:id", authenticateJWT, isAdmin, deleteBlog);
 router.put(
   "/upload/:id",

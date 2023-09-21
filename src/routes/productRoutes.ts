@@ -15,9 +15,11 @@ import {
 } from "../controller/uploadImagesController";
 const router = express.Router();
 router.get("/", getAllProducts);
-router.post("/", authenticateJWT, isAdmin, createProduct);
 router.get("/:id", getProductByID);
+// authenticated routes
 router.put("/rating", authenticateJWT, rating);
+// admin routes
+router.post("/", authenticateJWT, isAdmin, createProduct);
 router.put("/:id", authenticateJWT, isAdmin, updateProduct);
 router.delete("/:id", authenticateJWT, isAdmin, deleteProduct);
 router.put(
