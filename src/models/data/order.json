@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "6daed833-5d26-4a4b-bb77-9530922cea7b",
+    "product": [
+      {
+        "productId": "1150a9e8-b1e6-4ea3-866f-820806c08ccf",
+        "quantity": 1,
+        "price": 599,
+        "color": "red"
+      },
+      {
+        "productId": "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4",
+        "quantity": 1,
+        "price": 3688,
+        "color": "blue"
+      }
+    ],
+    "count": 0,
+    "payment": {
+      "method": "Cash on delivery",
+      "amount": 3858.3,
+      "created": "2023-09-24T06:35:31.514Z",
+      "currency": "INR",
+      "status": "Dispatched"
+    },
+    "orderStatus": "Dispatched",
+    "orderBy": "2870871a-7ab7-451b-aef2-c47541f00ae0"
+  }
+]

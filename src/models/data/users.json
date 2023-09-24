@@ -15,34 +15,28 @@
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJlbWFpbCI6ImFyaW5kYW1naG9zaDE5OTVAZ21haWwuY29tIiwiaWF0IjoxNjk0NjI2MDYxLCJleHAiOjE2OTQ4ODUyNjF9.qJ2foNuSU7_vrx2AusE4RyQSpoTzhsWiQCz4yWQ3-og"
   },
   {
-    "id": "3",
-    "firstname": "hello",
-    "lastname": "world",
-    "email": "arindam@gmail.com",
-    "mobile": "99444002",
-    "password": "$2b$10$cajcGz6F8Icd3rZ8ZfQgou45P3Jp0WL2u3bAMp2zl1HbAu/ZMME/O",
-    "isBlocked": false,
-    "role": "admin",
-    "cart": [],
-    "wishlist": [
-      "1150a9e8-b1e6-4ea3-866f-820806c08ccf"
-    ],
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJlbWFpbCI6ImFyaW5kYW1AZ21haWwuY29tIiwiaWF0IjoxNjk1MTM3MzQ2LCJleHAiOjE2OTUzOTY1NDZ9.NoFUulzNmRK4CtIXkuJtTWTCaXt6MJ2BhZUB8sGpiNE"
-  },
-  {
-    "id": "5c176a07-5d3f-4216-9e38-1b4164e6c486",
+    "id": "2870871a-7ab7-451b-aef2-c47541f00ae0",
     "firstname": "arindam",
     "lastname": "world",
     "email": "arindam123@gmail.com",
     "mobile": "99444002",
-    "password": "$2b$10$iFzedALaIQe85SVQNduQtuGPubXrW41f9yCAKA06Rdqw3xpUp16EW",
+    "password": "$2b$10$4hihSWjD1NeYvFQr4RNsqOHs1gjvu8Vubv1ofQKc6B7O3fW9fZsAm",
     "isBlocked": false,
     "cart": [],
-    "wishlist": [
-      "1150a9e8-b1e6-4ea3-866f-820806c08ccf",
-      "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4"
-    ],
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjMTc2YTA3LTVkM2YtNDIxNi05ZTM4LTFiNDE2NGU2YzQ4NiIsImVtYWlsIjoiYXJpbmRhbTEyM0BnbWFpbC5jb20iLCJpYXQiOjE2OTUxNDI5NjAsImV4cCI6MTY5NTQwMjE2MH0.ovcCqldPIIrF1TQDMVt46oNpyp5k1H68tbCbLbPOeH8",
-    "address": "ohio lucknow"
+    "wishlist": [],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4NzA4NzFhLTdhYjctNDUxYi1hZWYyLWM0NzU0MWYwMGFlMCIsImVtYWlsIjoiYXJpbmRhbTEyM0BnbWFpbC5jb20iLCJpYXQiOjE2OTU1MzkzODYsImV4cCI6MTY5NTc5ODU4Nn0.dXuSU5DJ7Ybt5GoX8vIMvRDIsOxypLolTVinDpoA648"
+  },
+  {
+    "id": "b23c5542-05ce-4372-aca5-9d7fc885ce37",
+    "firstname": "arindam",
+    "lastname": "world",
+    "email": "arindam@gmail.com",
+    "mobile": "99444002",
+    "password": "$2b$10$Xai91V5k89f1ncMq6ok9g.w0wWqZR7pfCHilkZCn6KtsUtspQNULS",
+    "isBlocked": false,
+    "role": "admin",
+    "cart": [],
+    "wishlist": [],
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIyM2M1NTQyLTA1Y2UtNDM3Mi1hY2E1LTlkN2ZjODg1Y2UzNyIsImVtYWlsIjoiYXJpbmRhbUBnbWFpbC5jb20iLCJpYXQiOjE2OTU1NjI2NTEsImV4cCI6MTY5NTgyMTg1MX0.kZyPOOpxYgm_YQmf0j-bRqAoDHFP3M32ZqCJg5WIrA4"
   }
 ]

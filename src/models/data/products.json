@@ -5,15 +5,18 @@
     "price": 599,
     "category": "5",
     "brand": "Sony",
-    "quantity": 7,
-    "sold": 2,
+    "quantity": 5,
+    "sold": 4,
     "images": [
       {
         "public_id": "12",
         "url": "https://"
       }
     ],
-    "color": ["black", "white"],
+    "color": [
+      "black",
+      "white"
+    ],
     "tags": "test",
     "slug": "Sony-Headphones-WH-CH520",
     "id": "1150a9e8-b1e6-4ea3-866f-820806c08ccf"
@@ -24,8 +27,8 @@
     "price": 3688,
     "category": "3",
     "brand": "BANDAI NAMCO Entertainment",
-    "quantity": 10,
-    "sold": 0,
+    "quantity": 8,
+    "sold": 2,
     "images": [
       {
         "public_id": "images_d99ca708-95b6-4cd8-99eb-960a012bc201.jpeg",

@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate } from "uuid";
 import { isPasswordMatch } from "../utils/hashpasswords";
 import { generateToken } from "../config/jwtToken";
 import { generateRefreshToken } from "../config/refreshtoken";
@@ -9,8 +9,14 @@ import { User, UserStore } from "../models/User";
 import { sendEmail } from "./EmailController";
 import { Product, ProductStore } from "../models/Product";
 import { CartStore } from "../models/Cart";
+import { CouponStore } from "../models/Coupon";
+import { OrderStore, ProductStatus } from "../models/Order";
 
 const userStore = new UserStore();
+const cartStore = new CartStore();
+const productStore = new ProductStore();
+const couponStore = new CouponStore();
+
 //create user
 export const createUser = expressAsyncHandler(async (req: any, res: any) => {
   const email: string = req?.body?.email;
@@ -193,7 +199,7 @@ export const deleteUserById = expressAsyncHandler(async (req, res) => {
     res.json({
       message: `User with id ${id} deleted successfully.`,
     });
-  } catch (error) {
+  } catch (error: any) {
     throw new Error("Error occured during deleteUserById");
   }
 });
@@ -377,19 +383,279 @@ export const saveAddress = expressAsyncHandler(async (req: any, res: any) => {
   }
 });
 // user cart
+type Cart = {
+  items: CartItem[];
+  cartTotal: number;
+  totalAfterDiscount: number;
+};
+type CartItem = {
+  productId: string;
+  quantity: number;
+  price: number;
+  color: string;
+};
+//some functionality still needed here
 export const addToCart = expressAsyncHandler(async (req: any, res: any) => {
-  const { id } = req.user;
-  const findUser = userStore.getUserById(id);
-  const cartStore = new CartStore();
-  if (findUser) {
-    if (findUser.cart) {
-    }
-    const cartId = cartStore.createCart(req.body);
-    findUser.cart.push(cartId);
-    userStore.updateUserById(id, findUser);
-    const updatedUser = userStore.getUserById(id);
-    res.json(updatedUser);
-  } else {
-    throw new Error("User not found.");
+  try {
+    const { id } = req.user;
+    const { cart } = req.body;
+    const obj: Cart = {
+      items: [],
+      cartTotal: 0,
+      totalAfterDiscount: 0,
+    };
+    cart.forEach((element: any) => {
+      const prod = productStore.getProductById(element.id);
+      if (prod) {
+        obj.items.push({
+          productId: prod.id,
+          quantity: element.count,
+          price: prod.price,
+          color: element.color,
+        });
+        obj.cartTotal += element.count * prod.price;
+        obj.totalAfterDiscount += element.count * prod.price;
+      }
+    });
+    const createdCart = cartStore.createCart(obj, id);
+    res.json(createdCart);
+  } catch (e: any) {
+    throw new Error(e);
   }
 });
+//get cart by user id
+export const getUserCart = expressAsyncHandler(async (req: any, res: any) => {
+  try {
+    const { id } = req.user;
+    const cartData = cartStore.getCartByUserID(id);
+    const obj: any = {
+      items: [],
+      cartTotal: 0,
+      totalAfterDiscount: 0,
+    };
+    if (cartData) {
+      cartData.items.forEach((x: any) => {
+        const prod = productStore.getProductById(x.productId);
+        obj.items.push({
+          products: prod,
+          quantity: x.count,
+          price: x.price,
+          color: x.color,
+        });
+      });
+      obj.cartTotal = cartData.cartTotal;
+      obj.totalAfterDiscount = cartData.totalAfterDiscount;
+      res.json(obj);
+    } else {
+      throw new Error("Not Found.");
+    }
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+// empty cart
+export const emptyCart = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  try {
+    const user = userStore.getUserById(id);
+    if (user) {
+      cartStore.deleteCartByUserID(user.id);
+      res.json({ message: "Cart deleted successsfully." });
+    }
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+// apply coupon
+export const applyCoupon = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  const { coupon } = req.body;
+  try {
+    const cartData = cartStore.getCartByUserID(id);
+    const existingCoupon = couponStore.getCouponbyName(coupon);
+    if (
+      cartData &&
+      existingCoupon &&
+      existingCoupon.expiry &&
+      existingCoupon.discount
+    ) {
+      const date = new Date(Date.now());
+      const expiryDate = new Date(existingCoupon.expiry);
+      if (date < expiryDate) {
+        let priceAfterDiscount = (
+          cartData.cartTotal -
+          (existingCoupon.discount * cartData.cartTotal) / 100
+        ).toFixed(2);
+        cartData.totalAfterDiscount = priceAfterDiscount;
+        const cart = cartStore.updateCart(cartData.id, cartData);
+        res.json(cart);
+      } else {
+        res.json("Coupon expired.");
+      }
+    } else {
+      throw new Error("Coupon not found.");
+    }
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+type Order = {
+  product: [];
+  payment: PaymentIntent;
+  orderStatus: string;
+  orderBy: string;
+};
+type PaymentIntent = {
+  method: string;
+  amount: number;
+  status?: string;
+  created: Date;
+  currency: string;
+};
+// create a new order
+export const createOrder = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  const { paymentType, couponApplied } = req.body;
+  const orderStore = new OrderStore();
+  try {
+    if (!paymentType && !(paymentType.toString().toLowerCase() === "cash"))
+      throw new Error("Create cash order failed");
+    const userCart = cartStore.getCartByUserID(id);
+
+    //assuming user already has a cart
+    let finalAmout = 0;
+    if (couponApplied && userCart.totalAfterDiscount) {
+      finalAmout = userCart.totalAfterDiscount;
+    } else {
+      finalAmout = userCart.cartTotal;
+    }
+    const order: Order = {
+      product: userCart.items,
+      payment: {
+        method: "Cash on delivery",
+        amount: userCart.totalAfterDiscount,
+        created: new Date(Date.now()),
+        currency: "INR",
+      },
+      orderStatus: ProductStatus.Default,
+      orderBy: userCart.orderby,
+    };
+    orderStore.createOrder(order);
+    userCart.items.forEach((product: any) => {
+      const existingProduct = productStore.getProductById(product.productId);
+      if (existingProduct) {
+        existingProduct.sold += product.quantity;
+        existingProduct.quantity -= product.quantity;
+        productStore.updateProduct(existingProduct.id, existingProduct);
+      }
+    });
+    res.json({ message: "success" });
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+// get orders
+export const getOrders = expressAsyncHandler(async (req: any, res: any) => {
+  const { id } = req.user;
+  try {
+    const orderStore = new OrderStore();
+    const orders = orderStore.getOrdersByUserId(id);
+    const user = userStore.getUserById(orders.orderBy);
+    if (orders && user) {
+      orders.orderBy = {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        mobile: user.mobile,
+        address: user.address,
+      };
+      orders.product.forEach((x: any) => {
+        const product = productStore.getProductById(x.productId);
+        x.productId = product;
+      });
+      res.json(orders);
+    }
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+// get all orders
+export const getAllOrders = expressAsyncHandler(async (req, res) => {
+  try {
+    const orderStore = new OrderStore();
+    const orderList = orderStore.getAllOrders();
+    orderList.forEach((order: any) => {
+      const user = userStore.getUserById(order.orderBy);
+      if (order && user) {
+        order.orderBy = {
+          id: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          mobile: user.mobile,
+          address: user.address,
+        };
+        order.product.forEach((x: any) => {
+          const product = productStore.getProductById(x.productId);
+          x.productId = product;
+        });
+      }
+    });
+    res.json(orderList);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+});
+
+// getOrder By UserId
+export const getOrderByUserId = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const orderStore = new OrderStore();
+    const orders = orderStore.getOrdersByUserId(id);
+    const user = userStore.getUserById(orders.orderBy);
+    if (orders && user) {
+      orders.orderBy = {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        mobile: user.mobile,
+        address: user.address,
+      };
+      orders.product.forEach((x: any) => {
+        const product = productStore.getProductById(x.productId);
+        x.productId = product;
+      });
+      res.json(orders);
+    }
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+// update Order Status
+export const updateOrderStatus = expressAsyncHandler(
+  async (req: any, res: any) => {
+    const { status } = req.body;
+    const { id } = req.params;
+    try {
+      const orderStore = new OrderStore();
+      const currentOrder = orderStore.getOrderById(id);
+      const order = {
+        ...currentOrder,
+        orderStatus: status,
+        payment: {
+          ...currentOrder.payment,
+          status: status,
+        },
+      };
+      const updatedOrder = orderStore.updateOrder(id, order);
+      res.json(updatedOrder);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+);

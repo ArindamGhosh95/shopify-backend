@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "items": [
+      {
+        "productId": "1150a9e8-b1e6-4ea3-866f-820806c08ccf",
+        "quantity": 1,
+        "price": 599,
+        "color": "red"
+      },
+      {
+        "productId": "ce80ba02-fbc3-481d-96fe-c5a37c8ab7c4",
+        "quantity": 1,
+        "price": 3688,
+        "color": "blue"
+      }
+    ],
+    "cartTotal": 4287,
+    "totalAfterDiscount": 3858.3,
+    "id": "e7f52e3e-846c-436f-a2c8-c886245c780d",
+    "orderby": "2870871a-7ab7-451b-aef2-c47541f00ae0"
+  }
+]

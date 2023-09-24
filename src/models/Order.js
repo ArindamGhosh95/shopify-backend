@@ -3,16 +3,22 @@ import { join } from "path";
 import { v4 as uuidv4 } from "uuid";
 import { UserStore } from "./User";
 
-const ProductStatus = {
+export const ProductStatus = {
   Default: "Not Processed",
-  CashOnDelivery: "Cash on Delivery",
   Processing: "Processing",
   Dispatched: "Dispatched",
   Cancelled: "Cancelled",
   Delivered: "Delivered",
 };
+const hashmap = new Map();
+hashmap.set(ProductStatus.Default, "Not Processed");
+hashmap.set(ProductStatus.Dispatched, "Dispatched");
+hashmap.set(ProductStatus.Processing, "Processing");
+hashmap.set(ProductStatus.Cancelled, "Cancelled");
+hashmap.set(ProductStatus.Delivered, "Delivered");
+
 function validateProductStatus(status) {
-  if (!(status in ProductStatus)) {
+  if (!hashmap.has(status)) {
     throw new Error("Invalid product status");
   }
 }
@@ -33,7 +39,7 @@ export class OrderStore {
       orderStatus = ProductStatus.Default,
       orderBy,
     } = orderData;
-    const newBlog = {
+    const newOrder = {
       id,
       product,
       count,
@@ -42,13 +48,13 @@ export class OrderStore {
       orderStatus,
       orderBy,
     };
-    this.blogs.push(newBlog);
+    this.orders.push(newOrder);
     this.saveOrders();
   }
   loadOrdersFromFile() {
     try {
       const fileData = readFileSync(this.filePath, "utf8");
-      this.blogs = JSON.parse(fileData);
+      this.orders = JSON.parse(fileData);
     } catch (error) {
       console.error("Error loading data from file:", error);
     }
@@ -67,15 +73,52 @@ export class OrderStore {
   createOrder(order) {
     validateProductStatus(order.orderStatus);
     const userStore = new UserStore();
-    const findUser = userStore.getUserById(order.userId);
+    const findUser = userStore.getUserById(order.orderBy);
     if (order.orderBy && order.orderBy !== null && !findUser) {
       throw new Error("User not found.");
     }
     try {
       this.createOrderWithDefaults(order);
-      return this.blogs;
+      return this.orders;
     } catch (e) {
       throw new Error(e);
     }
+  }
+  getOrdersByUserId(userId) {
+    try {
+      return this.orders.find((x) => {
+        return x.orderBy === userId;
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+  getAllOrders() {
+    try {
+      return this.orders;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  updateOrder(id, order) {
+    try {
+      validateProductStatus(order.orderStatus);
+      const orderIdx = this.orders.findIndex((order) => {
+        return order.id === id;
+      });
+      console.log(orderIdx);
+      if (orderIdx !== -1) {
+        this.orders[orderIdx] = { ...this.orders[orderIdx], ...order };
+        this.saveOrders();
+        return this.orders[orderIdx];
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+  getOrderById(id) {
+    return this.orders.find((order) => {
+      return order.id === id;
+    });
   }
 }

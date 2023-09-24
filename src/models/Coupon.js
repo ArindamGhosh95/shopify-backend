@@ -119,6 +119,20 @@ export class CouponStore {
       throw new Error(e);
     }
   }
+  getCouponbyName(couponName) {
+    try {
+      const coupon = this.couponList.find((x) => {
+        return x.name === couponName;
+      });
+      if (coupon) {
+        return coupon;
+      } else {
+        throw new Error(`Coupon not found with name ${couponName}.`);
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
   getCoupons() {
     return this.couponList;
   }
